@@ -418,4 +418,5 @@ FodyWeavers.xsd
 *.msp
 
 build/
+build_debug/
 build_vs/

@@ -12,7 +12,16 @@ find_package(OpenCV REQUIRED)
 include_directories(${OpenCV_INCLUDE_DIRS} include)
 
 # 실행 파일 생성
-add_executable(WaferApp src/main.cpp)
+add_executable(WaferApp
+  src/main.cpp
+  src/ImageLoader.cpp
+)
 
 # 라이브러리 연결
 target_link_libraries(WaferApp ${OpenCV_LIBS})
+
+add_custom_command(TARGET WaferApp POST_BUILD
+  COMMAND ${CMAKE_COMMAND} -E copy_directory
+  ${CMAKE_SOURCE_DIR}/data
+  $<TARGET_FILE_DIR:WaferApp>/data
+)

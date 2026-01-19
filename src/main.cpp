@@ -19,7 +19,7 @@ int main() {
   {
     // Scope를 만들어서 강제로 소멸자 호출 테스트
     ImageLoader loader;
-    if (loader.load("data/wafer_001.jpg")) {
+    if (loader.load("data/wafer_01.jpg")) {
       std::cout << "Image Memory Address: " << (void *)loader.getData()
                 << std::endl;
     }

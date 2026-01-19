@@ -1,29 +1,31 @@
+#include "../include/ImageLoader.h"
 #include <iostream>
-#include <opencv2/opencv.hpp>
 
+// 메모리 누수 감지 (Windows 전용)
+#ifdef _WIN32
+#define _CRTDBG_MAP_ALLOC
+#include <crtdbg.h>
+#include <stdlib.h>
+
+#endif
 
 int main() {
-  // 1. 이미지 읽기 (상대 경로 주의: build 폴더 위치에 따라 ../data 로 접근해야 할 수도 있음)
-  //  일단 절대 경로로 테스트해보는 게 제일 확실함. (경로 수정 필요!)
-  std::string imagePath =
-      "C:/Users/Woo/Desktop/C++Project/wafer-inspection-cpp/data/wafer_01.jpg";
+#ifdef _WIN32
+  _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+#endif
 
-  cv::Mat img = cv::imread(imagePath);
+  std::cout << "=== Wafer Inspection Engine Start ===" << std::endl;
 
-  // 2. 예외 처리
-  if (img.empty()) {
-    std::cerr << "Error: Image not found at " << imagePath << std::endl;
-    return -1;
+  {
+    // Scope를 만들어서 강제로 소멸자 호출 테스트
+    ImageLoader loader;
+    if (loader.load("data/wafer_001.bmp")) { // 파일명은 실제 있는 걸로
+      std::cout << "Image Memory Address: " << (void *)loader.getData()
+                << std::endl;
+    }
   }
+  // 여기서 "~ImageLoader" 로그가 찍혀야 함
 
-  // 3. 윈도우 창 띄우기
-  cv::namedWindow("Wafer Viewer", cv::WINDOW_AUTOSIZE);
-  cv::imshow("Wafer Viewer", img);
-
-  std::cout << "Success: Image Loaded (" << img.cols << "x" << img.rows << ")"
-            << std::endl;
-
-  // 4. 키 입력 대기 (아무 키나 누르면 종료)
-  cv::waitKey(0);
+  std::cout << "=== Engine Shutdown ===" << std::endl;
   return 0;
 }
